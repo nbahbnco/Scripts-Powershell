@@ -1,0 +1,1 @@
+Get-Childitem -Path C:\ -Recurse -ErrorAction SilentlyContinue -Include *zabbix_sender.exe* -File
