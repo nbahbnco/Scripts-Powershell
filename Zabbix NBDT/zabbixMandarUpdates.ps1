@@ -133,7 +133,6 @@ if (($countCritical + $countOptional) -gt 0) {
 	Write-Host "`t There are $($countOptional) optional updates available" -ForeGroundColor "Yellow"
 	Write-Host "`t There are $($countHidden) hidden updates available" -ForeGroundColor "Yellow"
 	
-	& $Sender $Senderarg1 $Senderarg2 $Senderarg3 $Senderarg4 $env:temp$SenderargUpdateReboot
 	& $Sender $Senderarg1 $Senderarg2 $Senderarg3 $Senderarg4 $env:temp$Senderarglastupdated
 	& $Sender $Senderarg1 $Senderarg2 $Senderarg3 $Senderarg4 $env:temp$Senderargcountcritical
 	& $Sender $Senderarg1 $Senderarg2 $Senderarg3 $Senderarg4 $env:temp$SenderargcountOptional
