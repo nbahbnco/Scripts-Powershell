@@ -7,6 +7,27 @@ Set-Content -value $bytes -encoding Byte -Path $env:TEMP\nbdtout.zip -Force
 Expand-Archive -Path $env:TEMP\nbdtout.zip -DestinationPath C:\nbdt -Force
 
 
+Function New-ScheduledTaskFolder
+    {
+
+     Param ($taskpath)
+
+     $ErrorActionPreference = "stop"
+
+     $scheduleObject = New-Object -ComObject schedule.service
+
+     $scheduleObject.connect()
+
+     $rootFolder = $scheduleObject.GetFolder("\")
+
+        Try {$null = $scheduleObject.GetFolder($taskpath)}
+
+        Catch { $null = $rootFolder.CreateFolder($taskpath) }
+
+        Finally { $ErrorActionPreference = "continue" } }
+
+New-ScheduledTaskFolder("Nubodata")
+
 $trigger = @(
     $(New-ScheduledTaskTrigger -AtStartup),
     $(New-ScheduledTaskTrigger -Once -At 0am -RepetitionDuration  (New-TimeSpan -Days 1)  -RepetitionInterval  (New-TimeSpan -Minutes 5)
@@ -17,9 +38,9 @@ $principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType
 
 
 #Services
-$Action = New-ScheduledTaskAction -Execute 'pwsh.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\nbdt\Servicios\ReinicioServiciosAutomatico.ps1"' -WorkingDirectory "C:\nbdt\Servicios"
+$Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\nbdt\Servicios\ReinicioServiciosAutomatico.ps1"' -WorkingDirectory "C:\nbdt\Servicios"
 $Task = New-ScheduledTask -Action $Action -Trigger $trigger -Settings $Settings -Principal $principal
-Register-ScheduledTask -TaskName 'Reinicio Automatico de Servicios' -InputObject $Task -Force
+Register-ScheduledTask -TaskName 'Reinicio Automatico de Servicios' -InputObject $Task -Force -TaskPath "Nubodata"
 
 #Zabbix 
 $trigger = @(
@@ -27,6 +48,6 @@ $trigger = @(
     $(New-ScheduledTaskTrigger -Once -At 0am -RepetitionDuration  (New-TimeSpan -Days 1)  -RepetitionInterval  (New-TimeSpan -Minutes 60)
     ))
 
-$Action = New-ScheduledTaskAction -Execute 'pwsh.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\nbdt\Zabbix NBDT\ZabbixMandarUpdates.ps1"' -WorkingDirectory "C:\nbdt\Zabbix NBDT"
-$Task = New-ScheduledTask -Action $Action -Trigger $trigger -Settings $Settings -Principal $principal
-Register-ScheduledTask -TaskName 'Zabbix Enviar Actualizaciones' -InputObject $Task -Force
+$Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\nbdt\Zabbix NBDT\ZabbixMandarUpdates.ps1"' -WorkingDirectory "C:\nbdt\Zabbix NBDT"
+$Task = New-ScheduledTask -Action $Action -Trigger $trigger -Settings $Settings -Principal $principal 
+Register-ScheduledTask -TaskName 'Zabbix Enviar Actualizaciones' -InputObject $Task -Force -TaskPath "Nubodata"
