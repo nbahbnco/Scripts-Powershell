@@ -30,7 +30,7 @@ New-ScheduledTaskFolder("Nubodata")
 
 $trigger = @(
     $(New-ScheduledTaskTrigger -AtStartup),
-    $(New-ScheduledTaskTrigger -Once -At 0am -RepetitionDuration  (New-TimeSpan -Days 1)  -RepetitionInterval  (New-TimeSpan -Minutes 5)
+    $(New-ScheduledTaskTrigger -Once -At 0am  -RepetitionInterval  (New-TimeSpan -Minutes 5)
     ))
 
 $Settings = New-ScheduledTaskSettingsSet
@@ -45,7 +45,7 @@ Register-ScheduledTask -TaskName 'Reinicio Automatico de Servicios' -InputObject
 #Zabbix 
 $trigger = @(
     $(New-ScheduledTaskTrigger -AtStartup),
-    $(New-ScheduledTaskTrigger -Once -At 0am -RepetitionDuration  (New-TimeSpan -Days 1)  -RepetitionInterval  (New-TimeSpan -Minutes 60)
+    $(New-ScheduledTaskTrigger -Once -At 0am -RepetitionInterval  (New-TimeSpan -Minutes 60)
     ))
 
 $Action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NonInteractive -NoLogo -NoProfile -File "C:\nbdt\Zabbix NBDT\ZabbixMandarUpdates.ps1"' -WorkingDirectory "C:\nbdt\Zabbix NBDT"
